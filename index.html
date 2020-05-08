@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+
+	<script src="../js/objectdetect.js"></script>
+	<script src="../js/objectdetect.frontalface.js"></script>
+	<script src="../js/objectdetect.profileface.js"></script>
+	<script src="../js/objectdetect.mouth.js"></script>
+	<script src="../js/objectdetect.eye.js"></script>
+  <style media="screen">
+    body{
+      background-color: black;
+    }
+    .canvas{
+			border-style: solid;
+			border-width: thin;
+			border-color: green;
+      position: absolute;
+      top: 3%;
+      left:19%;
+    }
+  </style>
+	<script>
+
+	let images = 84;
+	let imagesarr = [];
+	for(let i=1; i<=images; i++) {
+		imagesarr.push("0"+i.toString()+".jpeg");
+	}
+
+	setTimeout(function() {
+		var timer = setInterval(imgTimer, 3000);
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		var size = 1200;
+		var detector;
+		var classifier = objectdetect.frontalface;
+
+
+		function detectFaces(canvas) {
+			// Detect faces in the image:
+			var rects = detector.detect(canvas);
+
+			// Draw rectangles around detected faces:
+			for (var i = 0; i < rects.length; ++i) {
+				var coord = rects[i];
+				context.beginPath();
+				context.lineWidth = '' + coord[4] * 5;
+				context.strokeStyle = 'rgba(0, 255, 0, .75)';
+				context.rect(coord[0], coord[1], coord[2], coord[3]);
+				context.stroke();
+			}
+		}
+
+		function loadImage(src) {
+			image = new Image();
+			image.onload = function() {
+				canvas.width = ~~(900);
+				canvas.height = ~~(700);
+				canvas.getContext('2d').drawImage(image, 0, 0, 900, 700);
+				detector = new objectdetect.detector(canvas.width, canvas.height, 1.2, classifier);
+				detectFaces(canvas);
+			}
+
+			image.src = src;
+		}
+
+		function imgTimer () {
+			loadImage(imagesarr[Math.floor(Math.random() * imagesarr.length)]);
+
+		};
+		console.log('new image');
+	}, 1000);
+    </script>
+</head>
+
+<body>
+	<div class="" style="">
+		<div class="canvas">
+			<canvas id="canvas"></canvas>
+		</div>
+	</div>
+
+
+</script>
+</body>
+</html>
